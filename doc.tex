@@ -1,0 +1,96 @@
+\documentclass{article}
+
+\usepackage{lmodern}
+\usepackage{amsthm}
+\usepackage{amsmath}
+
+\usepackage{listings}
+\usepackage{microtype}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\title{Binary Search Library}
+\author{Alan Tseng}
+\date{February 12, 2021}
+
+\begin{document}
+
+\maketitle
+
+This library does binary search to find the upper and lower bounds of $x$ corresponding to a given $y$.
+The $(x, y)$ pairs can be specified as a monotone increasing function or as
+the (index, value) pairs of a sorted array.
+
+\section{Monotone functions}
+
+\begin{defn}
+	The function $f$ is monotone increasing if for all
+	$x,y$ in the domain of $f$, $x \le y$ implies $f(x) \le f(y)$.
+\end{defn}
+
+\begin{lstlisting}[language=Lisp]
+(infimum f <= y a b epsilon)
+(supremum f <= y a b epsilon)
+\end{lstlisting}
+
+\paragraph{Parameters}
+\begin{itemize}
+\item f: a monotone increasing function defined on real numbers
+\item $<=$: binary relation on the range of f. It should take
+	two arguments $r, s$ and return true if $r \le s$.
+\item y: a value of the same type as returned by f
+\item a: real number in the domain of f
+\item b: real number in the domain of f such that $a < b$
+\item epsilon: real number $> 0$
+\end{itemize}
+
+\paragraph{Returns}
+The values $x, f(x)$ satisfying:
+
+For infimum, $x \in [a,b)$ such that $f(x) \le y < f(x+\epsilon)$
+
+For supremum, $x \in (a,b]$ such that $f(x-\epsilon) < y \le f(x)$
+
+\paragraph{Exceptions}
+Throws OUT-OF-BOUNDS-ERROR if the infimum or supremum isn't in the domain of f.
+
+\section{Sorted arrays}
+
+\begin{defn}
+A $n$-element array $A$ is in ascending order
+if $f(i) = A[i]$ is a monotone increasing function for all integer $i \in [0,n)$.
+\end{defn}
+
+%The math for monotone functions can be adapted to arrays by letting $\epsilon = 1$.
+
+\begin{lstlisting}[language=Lisp]
+(infimum-array arr <= y a b)
+(supremum-array arr <= y a b)
+\end{lstlisting}
+
+\paragraph{Parameters}
+\begin{itemize}
+\item arr: an array in ascending order of $<=$
+\item $<=$: a binary relation on the elements of arr. It should take
+	two arguments $r, s$ and return true iff $r \le s$
+\item y: a value that can be compared with the elements of arr
+\item a: index of arr. Default value is 0.
+\item b: index of arr. Default value is the last index of arr.
+\end{itemize}
+
+$a$ and $b$ must satisfy
+$0 \le a < b < n$ where $n$ is the length of arr.
+
+\paragraph{Returns}
+The values $i, arr[i]$ satisfying:
+
+For infimum-array, $i \in [a,b)$ such that $arr[i] \le y < arr[i+1]$
+
+For supremum-array, $i \in (a,b]$ such that $arr[i-1] < y \le arr[i]$
+
+\paragraph{Exceptions}
+Throws OUT-OF-BOUNDS-ERROR if the infimum or supremum isn't in the array.
+
+\end{document}
+
