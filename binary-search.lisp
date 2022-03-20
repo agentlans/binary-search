@@ -28,7 +28,9 @@ SOFTWARE.
 	   :infimum
 	   :supremum
 	   :infimum-array
-	   :supremum-array))
+	   :supremum-array
+           :find-index<
+           :find-index>))
 (in-package :binary-search)
 
 (defun mid-point (a b)
@@ -116,3 +118,24 @@ SOFTWARE.
     (supremum (make-getter arr)
 	      <= y a b 1
 	      #'int-mid-point)))
+
+(defun find-index< (arr x &key (<= #'<=) (inclusive t))
+  "Returns the greatest i such that arr[i] < x or arr[i] <= x. O(log n) time."
+  (if inclusive
+      (infimum-array arr <= x)
+      (- (supremum-array arr <= x) 1)))
+
+(defun find-index> (arr x &key (<= #'<=) (inclusive t))
+  "Returns the least i such that arr[i] > x or arr[i] >= x. O(log n) time."
+  (if inclusive
+      (+ (infimum-array arr <= x) 1)
+      (supremum-array arr <= x)))
+
+#|
+(let ((foo #(0 1 1 2 2 2 2 3)))
+  ;; The number 2 is in (2,6] and [3,7) of foo
+  (list (find-index< foo 2 :inclusive nil) ; 2
+	(find-index< foo 2 :inclusive t) ; 6
+	(find-index> foo 2 :inclusive nil) ; 3
+	(find-index> foo 2 :inclusive t))) ; 7
+|#
